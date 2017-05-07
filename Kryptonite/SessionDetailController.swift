@@ -158,6 +158,13 @@ class SessionDetailController: KRBaseTableController, UITextFieldDelegate {
     
     //MARK: Edit Device Session Name
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        guard let session = session else {
+            return
+        }
+
+        textField.text = session.pairing.displayName
+    }
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         return true
     }
@@ -169,9 +176,10 @@ class SessionDetailController: KRBaseTableController, UITextFieldDelegate {
         }
         
         if name.isEmpty {
-            deviceNameField.text = session.pairing.displayName.uppercased()
+            return false
         } else {
             SessionManager.shared.changeSessionPairingName(of: session.id, to: name)
+            self.session?.pairing.name = name
             deviceNameField.text = name.uppercased()
         }
         
